@@ -1,5 +1,6 @@
 import pygame
 import random
+import os
 pygame.init()
 tamanho = (800,600)
 relogio = pygame.time.Clock()
@@ -22,6 +23,12 @@ pygame.mixer.Sound.play(missileSound)
 fonte = pygame.font.SysFont("comicsans", 14)
 pygame.mixer.music.load("assets/ironsound.mp3")
 pygame.mixer.music.play(1)
+pontos = 0
+larguraXPersona = 250
+alturaPersona = 127
+larguraMissel = 50
+alturaMissel = 250
+dificuldade = 0
 while True:
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
@@ -62,13 +69,28 @@ while True:
     posicaoYmissel = posicaoYmissel + velocidadeYmissel
     if posicaoYmissel > 600:
         posicaoYmissel = -240
+        pontos = pontos + 1
         velocidadeYmissel = velocidadeYmissel +1
         posicaoXmissel = random.randint (0, 800)
         pygame.mixer.Sound.play(missileSound)
-    texto = fonte.render(str(posicaoXPersona)+"-"+str(posicaoYPersona), True, branco)
-    tela.blit(texto,(posicaoXPersona -30, posicaoYPersona -10))
+    texto = fonte.render("Pontos: " +str(pontos), True, branco)
+    tela.blit(texto,(10, 20))
+
+    pixelsPersonaX = list(range(posicaoXPersona, posicaoXPersona+larguraXPersona))
+    pixelsPersonaY = list(range(posicaoYPersona, posicaoYPersona + alturaPersona))
+    pixelsMisselX = list(range(posicaoXmissel, posicaoXmissel + larguraMissel))
+    pixelMisselY = list(range(posicaoYmissel, posicaoYmissel + alturaMissel))
 
 
 
+    os.system ("cls")
+    print ( len (list(set (pixelsMisselX).intersection(set(pixelsPersonaX)))))
+    if len (list(set (pixelMisselY).intersection(set(pixelsPersonaY)))) > dificuldade:
+        if len (list(set (pixelsMisselX).intersection(set(pixelsPersonaX)))) > dificuldade:
+            print("Morreu")
+        else:
+            print(" ainda vivo mas por pouco")
+    else:
+        print ("vivo")
     pygame.display.update()
     relogio.tick(60)
